@@ -1,0 +1,75 @@
+[
+  {
+    "model": "materials.course",
+    "pk": 101,
+    "fields": {
+      "title": "Python для начинающих",
+      "preview": "",
+      "description": "Основы языка: переменные, циклы, функции."
+    }
+  },
+  {
+    "model": "materials.course",
+    "pk": 102,
+    "fields": {
+      "title": "Django REST framework",
+      "preview": "",
+      "description": "Создание API для SPA-приложений."
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 101,
+    "fields": {
+      "title": "Установка Python",
+      "description": "Урок «Установка Python».",
+      "preview": "",
+      "video_url": "https://www.youtube.com/watch?v=lms101",
+      "course": 101
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 102,
+    "fields": {
+      "title": "Переменные и типы данных",
+      "description": "Урок «Переменные и типы данных».",
+      "preview": "",
+      "video_url": "https://www.youtube.com/watch?v=lms102",
+      "course": 101
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 103,
+    "fields": {
+      "title": "Циклы и условия",
+      "description": "Урок «Циклы и условия».",
+      "preview": "",
+      "video_url": "https://www.youtube.com/watch?v=lms103",
+      "course": 101
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 104,
+    "fields": {
+      "title": "Сериализаторы",
+      "description": "Урок «Сериализаторы».",
+      "preview": "",
+      "video_url": "https://www.youtube.com/watch?v=lms104",
+      "course": 102
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 105,
+    "fields": {
+      "title": "ViewSet и роутеры",
+      "description": "Урок «ViewSet и роутеры».",
+      "preview": "",
+      "video_url": "https://www.youtube.com/watch?v=lms105",
+      "course": 102
+    }
+  }
+]

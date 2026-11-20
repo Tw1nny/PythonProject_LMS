@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 
-from users.models import User
+from users.models import Payment, User
 
 
 class UserAdminCreationForm(UserCreationForm):
@@ -33,3 +33,11 @@ class UserAdmin(BaseUserAdmin):
         ("Важные даты", {"fields": ("last_login", "date_joined")}),
     )
     add_fieldsets = ((None, {"classes": ("wide",), "fields": ("email", "password1", "password2")}),)
+
+
+@admin.register(Payment)
+class PaymentAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "payment_date", "paid_course", "paid_lesson", "amount", "payment_method")
+    list_filter = ("payment_method", "paid_course")
+    search_fields = ("user__email",)
+    date_hierarchy = "payment_date"

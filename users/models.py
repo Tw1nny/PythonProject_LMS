@@ -5,11 +5,16 @@
 есть все поля обычного пользователя Django. Отличия:
 - вход по email (USERNAME_FIELD = "email"), поля username нет;
 - дополнительные поля: телефон, город, аватарка.
+
+Payment — платёж пользователя за курс или за отдельный урок.
 """
 
+from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import Q
+from django.utils import timezone
 
 
 class UserManager(BaseUserManager):
@@ -58,3 +63,57 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+
+class Payment(models.Model):
+    """Платёж: оплачивается либо курс целиком, либо отдельный урок."""
+
+    class PaymentMethod(models.TextChoices):
+        CASH = "cash", "Наличные"
+        TRANSFER = "transfer", "Перевод на счёт"
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="payments",
+        verbose_name="Пользователь",
+    )
+    payment_date = models.DateTimeField(default=timezone.now, verbose_name="Дата оплаты")
+    paid_course = models.ForeignKey(
+        "materials.Course",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="payments",
+        verbose_name="Оплаченный курс",
+    )
+    paid_lesson = models.ForeignKey(
+        "materials.Lesson",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="payments",
+        verbose_name="Отдельно оплаченный урок",
+    )
+    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Сумма оплаты")
+    payment_method = models.CharField(
+        max_length=10,
+        choices=PaymentMethod.choices,
+        verbose_name="Способ оплаты",
+    )
+
+    class Meta:
+        verbose_name = "Платёж"
+        verbose_name_plural = "Платежи"
+        ordering = ["-payment_date"]
+        constraints = [
+            # Нельзя оплатить в одном платеже и курс, и урок.
+            models.CheckConstraint(
+                condition=~Q(paid_course__isnull=False, paid_lesson__isnull=False),
+                name="payment_course_or_lesson",
+            ),
+        ]
+
+    def __str__(self):
+        target = self.paid_course or self.paid_lesson or "—"
+        return f"{self.user} — {target} — {self.amount} ₽"
