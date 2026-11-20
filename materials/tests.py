@@ -102,3 +102,33 @@ class LessonAPITests(APITestCase):
     def test_lessons_deleted_with_course(self):
         self.client.delete(f"/courses/{self.course.pk}/")
         self.assertFalse(Lesson.objects.exists())
+
+
+class CourseLessonsFieldsTests(APITestCase):
+    def setUp(self):
+        self.course = Course.objects.create(title="Python")
+        self.empty = Course.objects.create(title="Пустой курс")
+        for title in ("Урок 1", "Урок 2", "Урок 3"):
+            Lesson.objects.create(title=title, course=self.course)
+
+    def test_lessons_count_and_lessons_in_one_serializer(self):
+        data = self.client.get(f"/courses/{self.course.pk}/").json()
+        self.assertEqual(data["lessons_count"], 3)
+        self.assertEqual([lesson["title"] for lesson in data["lessons"]], ["Урок 1", "Урок 2", "Урок 3"])
+        self.assertEqual(data["lessons"][0]["course"], self.course.pk)
+
+        empty = self.client.get(f"/courses/{self.empty.pk}/").json()
+        self.assertEqual(empty["lessons_count"], 0)
+        self.assertEqual(empty["lessons"], [])
+
+    def test_count_updates_and_list_uses_two_queries(self):
+        Lesson.objects.create(title="Урок 4", course=self.course)
+        with self.assertNumQueries(2):
+            data = self.client.get("/courses/").json()
+        counts = {course["title"]: course["lessons_count"] for course in data}
+        self.assertEqual(counts, {"Python": 4, "Пустой курс": 0})
+
+    def test_lessons_field_is_read_only(self):
+        r = self.client.post("/courses/", {"title": "Новый", "lessons": [{"title": "x"}]}, format="json")
+        self.assertEqual(r.status_code, 201)
+        self.assertEqual(r.json()["lessons_count"], 0)

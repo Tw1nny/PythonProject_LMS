@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "LMS API",
-    "description": "Проверка эндпоинтов курсов, уроков и профилей пользователей.",
+    "description": "Курсы, уроки, профили и платежи. Перед запросами «из фикстур» загрузите данные: python manage.py loaddata users materials payments",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -189,6 +189,24 @@
               "path": [
                 "courses",
                 "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Курс с уроками и их количеством (из фикстур)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/courses/101/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "courses",
+                "101",
+                ""
               ]
             }
           }
@@ -410,6 +428,219 @@
                   "language": "json"
                 }
               }
+            }
+          }
+        },
+        {
+          "name": "Профиль с историей платежей (из фикстур)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/101/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "101",
+                ""
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Платежи (фильтры и сортировка)",
+      "item": [
+        {
+          "name": "Все платежи (сначала новые)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/payments/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "payments",
+                ""
+              ]
+            }
+          }
+        },
+        {
+          "name": "Сортировка по дате: по возрастанию",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/payments/?ordering=payment_date",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "payments",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "ordering",
+                  "value": "payment_date"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Сортировка по дате: по убыванию",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/payments/?ordering=-payment_date",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "payments",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "ordering",
+                  "value": "-payment_date"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Фильтр по курсу",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/payments/?paid_course=101",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "payments",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "paid_course",
+                  "value": "101"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Фильтр по уроку",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/payments/?paid_lesson=104",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "payments",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "paid_lesson",
+                  "value": "104"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Фильтр: наличные",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/payments/?payment_method=cash",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "payments",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "payment_method",
+                  "value": "cash"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Фильтр: перевод на счёт",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/payments/?payment_method=transfer",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "payments",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "payment_method",
+                  "value": "transfer"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Сочетание: наличные + по возрастанию даты",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/payments/?payment_method=cash&ordering=payment_date",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "payments",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "payment_method",
+                  "value": "cash"
+                },
+                {
+                  "key": "ordering",
+                  "value": "payment_date"
+                }
+              ]
             }
           }
         }

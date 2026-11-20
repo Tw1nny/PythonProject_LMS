@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Сторонние приложения
     "rest_framework",
+    "django_filters",
     # Приложения проекта
     "users.apps.UsersConfig",
     "materials.apps.MaterialsConfig",
